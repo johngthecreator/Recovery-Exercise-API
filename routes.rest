@@ -1,0 +1,57 @@
+### Localhost
+# GET Request to retreive all exercises
+GET http://localhost:3000/exercises
+
+###
+# CREATE "Big Toe Raises" exercise
+POST http://localhost:3000/exercises
+content-type: application/json 
+{
+	"name": "Big Toe Raises",
+	"description": "Sit on a chair with your feet flat on the ground. Lift your toes as high as you can while keeping your heels on the ground. Lower your toes back down.",
+	"difficulty": "Easy",
+	"body_part": ["feet"]
+}
+
+###
+# DELETE "Toe Lifts" exercise
+DELETE http://localhost:3000/exercises/61a921f6028954d4f0319e86
+
+
+###
+# UPDATE "Hand Squeezes" exercise
+PUT http://localhost:3000/exercises/61a921f6028954d4f0319e83
+content-type: application/json 
+{
+	"difficulty": "Easy",
+	"body_part": ["feet", "hands"]
+}
+
+### Live
+# GET Request to retreive all exercises
+GET https://recovery-exercises.onrender.com//exercises
+
+###
+# CREATE "Big Toe Raises" exercise
+POST https://recovery-exercises.onrender.com/exercises
+content-type: application/json 
+{
+	"name": "Big Toe Raises",
+	"description": "Sit on a chair with your feet flat on the ground. Lift your toes as high as you can while keeping your heels on the ground. Lower your toes back down.",
+	"difficulty": "Easy",
+	"body_part": ["feet"]
+}
+
+###
+# DELETE "Toe Lifts" exercise
+DELETE https://recovery-exercises.onrender.com/exercises/61a921f6028954d4f0319e86
+
+
+###
+# UPDATE "Hand Squeezes" exercise
+PUT https://recovery-exercises.onrender.com/exercises/61a921f6028954d4f0319e83
+content-type: application/json 
+{
+	"difficulty": "Easy",
+	"body_part": ["feet", "hands"]
+}
