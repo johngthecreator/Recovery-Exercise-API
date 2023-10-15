@@ -6,7 +6,7 @@
     "description": ""
   },
   "host": "recovery-exercises.onrender.com",
-  "basePath": "/exercises",
+  "basePath": "/",
   "tags": [
     {
       "name": "",
