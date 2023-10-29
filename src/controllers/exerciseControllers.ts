@@ -66,4 +66,35 @@ export const deleteOneExercise = async (req: Request, res: Response) => {
     
 }
 
+export const getExercisesByCategory = async (req: Request, res: Response) => {
+    try {
+        await client.connect();
+        const myDB = client.db("recovery_exercises")
+        const myColl = myDB.collection("exercises");
+        const query = { body_part: req.params.category };
+        const returnedData = await myColl.find(query).toArray()
+        res.status(200).json({data: returnedData})
+      } catch (e) {
+        res.status(500).json({message:`Error querying${e}`});
+      } finally {
+        await client.close();
+      }
+}
+
+export const getExercisesById = async (req: Request, res: Response) => {
+    try {
+        await client.connect();
+        const myDB = client.db("recovery_exercises")
+        const myColl = myDB.collection("exercises");
+        const query = {_id: new ObjectId(req.params.id)};
+        const returnedData = await myColl.find(query).toArray()
+        res.status(200).json({data: returnedData})
+      } catch (e) {
+        res.status(500).json({message:`Error querying${e}`});
+      } finally {
+        await client.close();
+      }
+    
+}
+
 

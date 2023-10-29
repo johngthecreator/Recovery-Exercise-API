@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc && node ./dist/routes/index.js",
-    "swagger": "node ./swagger.js",
+    "swagger": "node ./swagger.ts",
     "build": "tsc"
   },
   "keywords": [],
@@ -21,8 +21,11 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-graphql": "^0.12.0",
+    "express-session": "^1.17.3",
     "graphql": "^15.8.0",
     "mongodb": "^6.1.0",
+    "passport": "^0.6.0",
+    "passport-oauth2": "^1.7.0",
     "swagger-autogen": "^2.23.6",
     "swagger-ui-express": "^5.0.0"
   },
