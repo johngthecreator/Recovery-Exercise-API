@@ -13,6 +13,8 @@ const testUsers = [
     { token: 2, username: 'bob', password: 'secret' }
 ];
 
+let userToken: string;
+
 app.use(session({
     secret: process.env.CLIENT_SECRET, // Change this to a secure secret key
     resave: false,
@@ -29,7 +31,6 @@ passport.use(new OAuth2Strategy({
     scope: ['email', 'profile']
   },
   (token, email, refreshToken, profile, cb) => {
-    // In a real-world application, you might store the user profile and token in a database.
     return cb(null, { token, profile, email, refreshToken });
   }));
 
@@ -42,17 +43,18 @@ app.use(passport.session());
 
 passport.serializeUser((user, done) => {
     console.log(user);
+    userToken = user.token;
     done(null, user.token);  // Here, 'user.id' is used as an example. You can choose appropriate user identifier.
 });
 
 passport.deserializeUser((token, done) => {
-    const user = testUsers.find(user => user.token === token);
+    // const user = testUsers.find(user => user.token === token);
     
-    if (user) {
-        done(null, user); // If found, return the user
-    } else {
-        done(new Error("User not found!"), false); // If not found, return an error
-    }
+    // if (user) {
+        done(null, token); // If found, return the user
+    // } else {
+    //     done(new Error("User not found!"), false); // If not found, return an error
+    // }
 });
 
 
@@ -60,13 +62,13 @@ app.get("/", (req: Request, res: Response) => {
     res.status(200).json({status:"Running", message:" Welcome to the Recovery Exercise API!"})
 })
 
-app.get('/auth',
+app.get('/login',
   passport.authenticate('oauth2'));
 
 app.get('/auth/callback',
   passport.authenticate('oauth2', { failureRedirect: '/login' }),
   (req, res) => {
-    res.redirect('/');
+    res.json({status:200, token: userToken})
   });
 
 app.use("/exercises", exercises);
