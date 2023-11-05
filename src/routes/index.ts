@@ -1,28 +1,21 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import {exercises} from "./exerciseRoutes.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json' assert {type: 'json'};
 import passport from 'passport';
 import session from 'express-session';
-import { Strategy as OAuth2Strategy } from 'passport-oauth2';
+import { Strategy } from 'passport-google-oauth20'
 
 const app: Express = express();
 
-const testUsers = [
-    { token: 1 , username: 'alice', password: 'password123' },
-    { token: 2, username: 'bob', password: 'secret' }
-];
-
-let userToken: string;
-
 app.use(session({
-    secret: process.env.CLIENT_SECRET, // Change this to a secure secret key
+    secret: process.env.CLIENT_SECRET, 
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false } // Set this to true if you're using HTTPS
 }));
 
-passport.use(new OAuth2Strategy({
+passport.use(new Strategy({
     authorizationURL: process.env.AUTH_URL!,
     tokenURL: process.env.TOKEN_URL!,
     clientID: process.env.CLIENT_ID!,
@@ -42,16 +35,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-    console.log(user);
-    userToken = user.token;
-    done(null, user.token);  // Here, 'user.id' is used as an example. You can choose appropriate user identifier.
+    done(null, user); 
 });
 
-passport.deserializeUser((token, done) => {
+passport.deserializeUser((user, done) => {
     // const user = testUsers.find(user => user.token === token);
     
     // if (user) {
-        done(null, token); // If found, return the user
+        done(null, user); // If found, return the user
     // } else {
     //     done(new Error("User not found!"), false); // If not found, return an error
     // }
@@ -62,17 +53,29 @@ app.get("/", (req: Request, res: Response) => {
     res.status(200).json({status:"Running", message:" Welcome to the Recovery Exercise API!"})
 })
 
-app.get('/login',
-  passport.authenticate('oauth2'));
-
-app.get('/auth/callback',
-  passport.authenticate('oauth2', { failureRedirect: '/login' }),
-  (req, res) => {
-    res.json({status:200, token: userToken})
-  });
-
 app.use("/exercises", exercises);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.get('/login',
+  passport.authenticate('google', {
+    scope: ['profile'] // Request permissions for profile and email
+  }));
+
+app.get('/auth/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req: Request, res: Response) => {
+  res.redirect("/api-docs")
+}
+);
+
+app.get('/logout', function(req: Request, res: Response, next: NextFunction){
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    req.session.destroy();
+    res.redirect('/');
+  });
+});
+
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`);

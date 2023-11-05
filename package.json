@@ -25,6 +25,7 @@
     "graphql": "^15.8.0",
     "mongodb": "^6.1.0",
     "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-oauth2": "^1.7.0",
     "swagger-autogen": "^2.23.6",
     "swagger-ui-express": "^5.0.0"
